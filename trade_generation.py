@@ -1,5 +1,4 @@
 from scapy.all import *
 
 
-packet = IP(dst="129.2.192.43")/TCP()/"SHELDON" 
-send(packet)
+send(IP(src="172.18.0.2", dst="172.18.0.1")/ICMP()/"HI")
