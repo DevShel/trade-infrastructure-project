@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import {useState, useEffect} from "react";
+import MaterialTable from "material-table";
 
 
 export default function Home() {
@@ -15,11 +16,13 @@ export default function Home() {
       setTrade(json[0].from)
     })
   }
+
   fetchData()
 
   const interval = setInterval(() => {
+    console.log("fetching")
     fetchData()
-  }, 5000);
+  }, 1000);
 
   // useEffect(() => {
   //   const fetchData = async () => {
