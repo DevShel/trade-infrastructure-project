@@ -1,43 +1,62 @@
 import Head from 'next/head'
-import {useState, useEffect} from "react";
+import clientPromise from '../lib/mongodb'
+import type { InferGetServerSidePropsType, GetServerSideProps } from 'next'
+import { useEffect, useState } from 'react'
+
+type ConnectionStatus = {
+  isConnected: boolean
+}
 
 
-export default function Home() {
+
+export const getServerSideProps: GetServerSideProps<ConnectionStatus> = async () => {
+  
+  try {
+    await clientPromise
+    // `await clientPromise` will use the default database passed in the MONGODB_URI
+    // However you can use another database (e.g. myDatabase) by replacing the `await clientPromise` with the following code:
+    //
+    // `const client = await clientPromise`
+    // `const db = client.db("myDatabase")`
+    //
+    // Then you can execute queries against your database like so:
+    // db.find({}) or any of the MongoDB Node Driver commands
+    
+    const res = await fetch(`localhost:3004/api/movies`);
+    const data = await res.json();
+    console.log(data)
+    return {
+      props: {isConnected: true},
+    }
+  } catch (e) {
+    console.error(e)
+    return {
+      props: { isConnected: false },
+    }
+  }
+}
+
+export default function Home({isConnected,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
   // const [temp, setTemp] = useState(0);
   const [trade, setTrade] = useState([]);
 
-
-  const fetchData = async () => {
-    const result = await fetch('api/trades');
-    result.json().then(json => {
-      console.log(json[0].from)
-      setTrade(json[0].from)
-    })
-  }
-  fetchData()
-
-  const interval = setInterval(() => {
-    fetchData()
-  }, 5000);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const result = await fetch('api/trades');
-  //     result.json().then(json => {
-  //       console.log(json[0].from)
-
-  //       setTrade(json.from)
-  //     })
-  //   }
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetch('localhost:3004/api/movies');
+      result.json().then(json => {
+        console.log(json)
+      })
+    }
     
-  //   fetchData();
-  // }, []);
+    fetchData();
+  }, []);
 
   return (
     <div className="container">
       <Head>
-        <title>Infrastructure Monitor</title>
+        <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -55,10 +74,13 @@ export default function Home() {
         <div className="grid">
 
           <div className="card">
-            <p> {trade} </p>
+            <p> hi </p>
           </div>
 
-      
+          <div className="card">
+            <h3>Documentation &rarr;</h3>
+            <p>Find in-depth information about Next.js features and API.</p>
+          </div>
 
           
 
