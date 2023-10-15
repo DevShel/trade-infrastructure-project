@@ -1,46 +1,132 @@
+import * as React from 'react'
 import Head from 'next/head'
-import {useState, useEffect} from "react";
-import MaterialTable from "material-table";
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from '@tanstack/react-table'
+
+type Trade = {
+  _id: string
+  latency: number
+  fromCurrency: string
+  toCurrency: string
+  amount: number
+}
+
+const defaultTradeData: Trade[] = [
+  {
+    _id: 'LOADING',
+    latency: 0,
+    fromCurrency: 'LOADING',
+    toCurrency: 'LOADING',
+    amount: 0,
+  },
+  {
+    _id: 'LOADING',
+    latency: 0,
+    fromCurrency: 'LOADING',
+    toCurrency: 'LOADING',
+    amount: 0,
+  },
+  {
+    _id: 'LOADING',
+    latency: 0,
+    fromCurrency: 'LOADING',
+    toCurrency: 'LOADING',
+    amount: 0,
+  },
+  {
+    _id: 'LOADING',
+    latency: 0,
+    fromCurrency: 'LOADING',
+    toCurrency: 'LOADING',
+    amount: 0,
+  },
+  {
+    _id: 'LOADING',
+    latency: 0,
+    fromCurrency: 'LOADING',
+    toCurrency: 'LOADING',
+    amount: 0,
+  },
+]
+
+const columnHelper = createColumnHelper<Trade>()
+
+const columns = [
+  columnHelper.accessor('_id', {
+    cell: info => info.getValue(),
+    footer: info => info.column.id,
+  }),
+  columnHelper.accessor('latency', {
+    header: () => 'Latency',
+    cell: info => info.renderValue(),
+    footer: info => info.column.id,
+  }),
+
+  columnHelper.accessor(row => row.fromCurrency, {
+    id: 'fromCurrency',
+    cell: info => <i>{info.getValue()}</i>,
+    header: () => <span>From Currency</span>,
+    footer: info => info.column.id,
+  }),
+  columnHelper.accessor(row => row.toCurrency, {
+    id: 'toCurrency',
+    cell: info => <i>{info.getValue()}</i>,
+    header: () => <span>To Currency</span>,
+    footer: info => info.column.id,
+  }),
+  columnHelper.accessor('amount', {
+    header: () => 'Amount',
+    cell: info => info.renderValue(),
+    footer: info => info.column.id,
+  }),
+  
+]
 
 
 export default function Home() {
 
-  // const [temp, setTemp] = useState(0);
-  const [trade, setTrade] = useState([]);
-
+  const [data, setData] = React.useState(() => [...defaultTradeData])
 
   const fetchData = async () => {
     const result = await fetch('api/trades');
     result.json().then(json => {
-      console.log(json[0].from)
-      setTrade(json[0].from)
+      console.log(json)
+      setData(json)
     })
   }
+  
 
-  fetchData()
+  React.useEffect(
+    () => {
+      setInterval(() => {
+        console.log("fetching")
+        fetchData()
+      }, 5000);
+    }, [])
 
-  const interval = setInterval(() => {
-    console.log("fetching")
-    fetchData()
-  }, 1000);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const result = await fetch('api/trades');
-  //     result.json().then(json => {
-  //       console.log(json[0].from)
 
-  //       setTrade(json.from)
-  //     })
-  //   }
-    
-  //   fetchData();
-  // }, []);
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  })
+
 
   return (
     <div className="container">
       <Head>
-        <title>Infrastructure Monitor</title>
+        <link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+/>
+        <title>Infrastruct
+          ure Monitor</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -57,12 +143,35 @@ export default function Home() {
 
         <div className="grid">
 
-          <div className="card">
-            <p> {trade} </p>
-          </div>
-
-      
-
+        <table>
+        <thead>
+          {table.getHeaderGroups().map(headerGroup => (
+            <tr key={headerGroup.id}>
+              {headerGroup.headers.map(header => (
+                <th key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </th>
+              ))}
+            </tr>
+          ))}
+        </thead>
+        <tbody>
+          {table.getRowModel().rows.map(row => (
+            <tr key={row.id}>
+              {row.getVisibleCells().map(cell => (
+                <td key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
           
 
           
@@ -72,8 +181,7 @@ export default function Home() {
       <footer>
         <a
           href="https://www.shel.io/portfolio"
-          target="_blank"
-          rel="noopener noreferrer"
+
         >
           A Shel.io Creation
         </a>
