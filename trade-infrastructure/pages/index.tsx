@@ -150,15 +150,11 @@ export default function Home() {
               Trading Infrastructure Monitor
             </h2>
           </div>
-          {/* Throttle and Average Row */}
+          {/* Average Row */}
           <div className="row align-items-center justify-content-center  my-3">
-            <div className="col-3">
-              <button className='btn btn-danger' >
-                Throttle Network Latency
-              </button>
-            </div>
             
-            <div className="col-5 text-center">
+            
+            <div className="col-8 text-center">
               This tool was created to track the network latency when sending trading information between two docker containers
             </div>
           </div>
