@@ -5,16 +5,14 @@ export default async (req, res) => {
        const client = await clientPromise;
        const db = client.db("trades");
 
-       const movies = await db
+       const tradesOutput = await db
            .collection("all-trades")
            .find({})
-           .limit(5)
+           .limit(50)
            .sort({_id:-1})
            .toArray();
 
-        
-
-       res.json(movies);
+       res.json(tradesOutput);
    } catch (e) {
        console.error(e);
    }

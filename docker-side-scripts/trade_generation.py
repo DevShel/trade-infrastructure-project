@@ -10,10 +10,10 @@ def generateTrade():
     currency2 = random.choice([i for i in range(0,24) if i not in [currency1]])
 
     return "".join(
-        
+
         [
-        currencyArray[currency1], 
-        '-', 
+        currencyArray[currency1],
+        '-',
         currencyArray[currency2],
         '-',
         str(random.randint(1000,9999)),

@@ -1,5 +1,7 @@
 import * as React from 'react'
 import Head from 'next/head'
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import {
   createColumnHelper,
   flexRender,
@@ -18,38 +20,38 @@ type Trade = {
 const defaultTradeData: Trade[] = [
   {
     _id: 'LOADING',
-    latency: 0,
+    latency: NaN,
     fromCurrency: 'LOADING',
     toCurrency: 'LOADING',
-    amount: 0,
+    amount: NaN,
   },
   {
     _id: 'LOADING',
-    latency: 0,
+    latency: NaN,
     fromCurrency: 'LOADING',
     toCurrency: 'LOADING',
-    amount: 0,
+    amount: NaN,
   },
   {
     _id: 'LOADING',
-    latency: 0,
+    latency: NaN,
     fromCurrency: 'LOADING',
     toCurrency: 'LOADING',
-    amount: 0,
+    amount: NaN,
   },
   {
     _id: 'LOADING',
-    latency: 0,
+    latency: NaN,
     fromCurrency: 'LOADING',
     toCurrency: 'LOADING',
-    amount: 0,
+    amount: NaN,
   },
   {
     _id: 'LOADING',
-    latency: 0,
+    latency: NaN,
     fromCurrency: 'LOADING',
     toCurrency: 'LOADING',
-    amount: 0,
+    amount: NaN,
   },
 ]
 
@@ -58,10 +60,11 @@ const columnHelper = createColumnHelper<Trade>()
 const columns = [
   columnHelper.accessor('_id', {
     cell: info => info.getValue(),
+    header: () => <span>MongoDB ID</span>,
     footer: info => info.column.id,
   }),
   columnHelper.accessor('latency', {
-    header: () => 'Latency',
+    header: () => 'Latency (ms)',
     cell: info => info.renderValue(),
     footer: info => info.column.id,
   }),
@@ -90,12 +93,22 @@ const columns = [
 export default function Home() {
 
   const [data, setData] = React.useState(() => [...defaultTradeData])
+  const [averageLatency, setAverageLatency] = React.useState(() => [NaN])
 
-  const fetchData = async () => {
-    const result = await fetch('api/trades');
+  function getAverageLatency(fiftyTradesObj: any) {
+    let sum = 0;
+    for (var i = 0; i < fiftyTradesObj.length; i++){
+      sum += fiftyTradesObj[i]['latency'];
+    }
+    return (sum/fiftyTradesObj.length).toFixed(3)
+  }
+
+  const fiftyTrades = async () => {
+    const result = await fetch('api/fiftyTrades');
     result.json().then(json => {
       console.log(json)
-      setData(json)
+      setData(json.slice(0,5))
+      setAverageLatency(getAverageLatency(json))
     })
   }
   
@@ -104,11 +117,9 @@ export default function Home() {
     () => {
       setInterval(() => {
         console.log("fetching")
-        fetchData()
-      }, 5000);
+        fiftyTrades()
+      }, 2000);
     }, [])
-
-
 
 
   const table = useReactTable({
@@ -118,64 +129,87 @@ export default function Home() {
   })
 
 
+
+
   return (
     <div className="container">
       <Head>
-        <link
-  rel="stylesheet"
-  href="https://fonts.googleapis.com/icon?family=Material+Icons"
-/>
-        <title>Infrastruct
-          ure Monitor</title>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+        <title>Infrastructure Monitor</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       <main>
-        <h1 className="title">
-          Trading Infrastructure
-        </h1>
+        
+        {/* Container encapsulating 3 main rows */}
+        <div className="container align-items-center justify-content-center "> 
 
-        <h2> This tool is used to track the latency of "trades" being sent as packets over a network</h2>
+          {/* Header Text Row */}
+          <div className="row ">
+            <h2 className="title">
+              Trading Infrastructure Monitor
+            </h2>
+          </div>
+          {/* Throttle and Average Row */}
+          <div className="row align-items-center justify-content-center  my-3">
+            <div className="col-3">
+              <button className='btn btn-danger' >
+                Throttle Network Latency
+              </button>
+            </div>
+            
+            <div className="col-5 text-center">
+              This tool was created to track the network latency when sending trading information between two docker containers
+            </div>
+          </div>
 
-        <button className="description">
-          Throttle Network Latency
-        </button>
-
-        <div className="grid">
-
-        <table>
-        <thead>
-          {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map(header => (
-                <th key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody>
-          {table.getRowModel().rows.map(row => (
-            <tr key={row.id}>
-              {row.getVisibleCells().map(cell => (
-                <td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-          
-
-          
+          {/* Column and Data Row */}
+          <div className="row my-3">
+            <div className="row">
+                <div className="col">
+                  <table className="table table-striped">
+                    <thead className="thead-dark">
+                      {table.getHeaderGroups().map(headerGroup => (
+                        <tr key={headerGroup.id}>
+                          {headerGroup.headers.map(header => (
+                            <th key={header.id}>
+                              {header.isPlaceholder
+                                ? null
+                                : flexRender(
+                                    header.column.columnDef.header,
+                                    header.getContext()
+                                  )}
+                            </th>
+                          ))}
+                        </tr>
+                      ))}
+                    </thead>
+                    <tbody>
+                      {table.getRowModel().rows.map(row => (
+                        <tr key={row.id}>
+                          {row.getVisibleCells().map(cell => (
+                            <td key={cell.id}>
+                              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                </table>
+                </div>
+                <div className="col px-5">
+                  <div className="row py-5">
+                    <h2> Average latency over last 50 trades: </h2>
+                    <h2> {averageLatency} ms </h2>
+                  </div>
+                  
+                </div>
+              
+              </div>
+          </div>
+        
         </div>
+
       </main>
 
       <footer>
@@ -189,21 +223,17 @@ export default function Home() {
 
       <style jsx>{`
         .container {
-          min-height: 100vh;
+          min-height: 75vh;
           padding: 0 0.5rem;
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          align-items: center;
         }
 
         main {
-          padding: 5rem 0;
+          padding: 3rem 0;
           flex: 1;
           display: flex;
           flex-direction: column;
-          justify-content: center;
-          align-items: center;
         }
 
         footer {
@@ -211,8 +241,6 @@ export default function Home() {
           height: 100px;
           border-top: 1px solid #eaeaea;
           display: flex;
-          justify-content: center;
-          align-items: center;
         }
 
         footer img {
@@ -247,8 +275,7 @@ export default function Home() {
           font-size: 4rem;
         }
 
-        .title,
-        .description {
+        .title{
           text-align: center;
         }
 
@@ -256,11 +283,7 @@ export default function Home() {
           font-size: 2rem;
         }
 
-        .description {
-          line-height: 1.5;
-          font-size: 1.5rem;
-        }
-
+   
         code {
           background: #fafafa;
           border-radius: 5px;
@@ -273,7 +296,6 @@ export default function Home() {
         .grid {
           display: flex;
           align-items: center;
-          justify-content: center;
           flex-wrap: wrap;
 
           max-width: 800px;

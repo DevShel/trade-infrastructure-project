@@ -14,10 +14,10 @@ collection = db["all-trades"]
 
 def post_data(packetString, time_received):
     parsed_array = packetString[2:-2].split('-');
-    print(parsed_array)
+    print("Posting trade " + str(parsed_array) + " to MongoDB")
     post = {
     "amount": parsed_array[2],
-    "latency": time_received - float(parsed_array[3]),
+    "latency": (time_received - float(parsed_array[3]))*1000 ,
     "fromCurrency": parsed_array[0],
     "toCurrency": parsed_array[1]
     }
@@ -30,4 +30,5 @@ t.start()
 
 while True:
     time.sleep(1)
-    exit(t.stop())
+
+t.stop()
