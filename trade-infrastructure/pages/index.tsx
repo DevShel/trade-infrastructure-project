@@ -91,9 +91,26 @@ const columns = [
 
 
 export default function Home() {
-
+  const [recordingText, setRecordingText] = React.useState(() => "Loading")
+  const [recordingStatus, setRecordingStatus] = React.useState(() => "Loading")
   const [data, setData] = React.useState(() => [...defaultTradeData])
   const [averageLatency, setAverageLatency] = React.useState(() => [NaN])
+
+
+  const getRecordingStatus = async () => {
+    const result = await fetch('api/recordingStatus');
+    result.json().then(json => {
+      console.log("Current Status:", json[0].status)
+      setRecordingStatus(json[0].status);
+      if (json[0].status == "recording"){
+        setRecordingText("Stop recording")
+      } else if (json[0].status == "normal"){
+        setRecordingText("Start recording")
+      }
+      
+    })
+    
+  }
 
   function getAverageLatency(fiftyTradesObj: any) {
     let sum = 0;
@@ -116,8 +133,9 @@ export default function Home() {
   React.useEffect(
     () => {
       setInterval(() => {
-        console.log("fetching")
+        console.log("Fetching trades and recording status")
         fiftyTrades()
+        getRecordingStatus()
       }, 2000);
     }, [])
 
@@ -132,11 +150,10 @@ export default function Home() {
 
   async function recordTrades(){
     console.log("Recording started")
+    // Dummy try catch to signal to port 8080 that we are recording
     try{
       const response = await fetch("http://localhost:8080");
-
     } catch{
-      
     }
   }
 
@@ -166,10 +183,11 @@ export default function Home() {
             <div className="col-8 text-center">
               This tool was created to track the network latency when sending trading information between two docker containers
             </div>
-
+            
             
           </div>
-          <button onClick={() => recordTrades()} className="btn btn-danger col-2"> Start Recording </button>
+          
+          
 
           {/* Column and Data Row */}
           <div className="row my-3">
@@ -206,7 +224,15 @@ export default function Home() {
                 </table>
                 </div>
                 <div className="col px-5">
-                  <div className="row py-5">
+                <div className = "row justify-content-center mt-3">
+                  <div className = "col">
+                    <button onClick={() => recordTrades()} className="btn btn-danger "> {recordingText} </button>
+                  </div>
+                  <div className = "col">
+                    <p> Current status: {recordingStatus}</p>
+                  </div>
+            </div>
+                  <div className="row mt-3 pt-3 border-top border-dark">
                     <h2> Average latency over last 50 trades: </h2>
                     <h2> {averageLatency} ms </h2>
                   </div>
