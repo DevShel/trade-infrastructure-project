@@ -130,6 +130,15 @@ export default function Home() {
 
 
 
+  async function recordTrades(){
+    console.log("Recording started")
+    try{
+      const response = await fetch("http://localhost:8080");
+
+    } catch{
+      
+    }
+  }
 
   return (
     <div className="container">
@@ -157,7 +166,10 @@ export default function Home() {
             <div className="col-8 text-center">
               This tool was created to track the network latency when sending trading information between two docker containers
             </div>
+
+            
           </div>
+          <button onClick={() => recordTrades()} className="btn btn-danger col-2"> Start Recording </button>
 
           {/* Column and Data Row */}
           <div className="row my-3">
