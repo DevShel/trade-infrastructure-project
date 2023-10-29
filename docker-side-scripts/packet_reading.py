@@ -11,7 +11,6 @@ db = cluster["trades"]
 collection = db["all-trades"]
 
 
-
 def post_data(packetString, time_received):
     parsed_array = packetString[2:-2].split('-');
     print("Posting trade " + str(parsed_array) + " to MongoDB")
@@ -24,7 +23,7 @@ def post_data(packetString, time_received):
     collection.insert_one(post)
 
 
-t = AsyncSniffer(filter="icmp", prn = lambda x: post_data(str(x.payload[2]), time.time()))
+t = AsyncSniffer(filter="udp and dst port 5005", prn = lambda x: post_data(str(x.payload[2]), time.time()))
 
 t.start()
 

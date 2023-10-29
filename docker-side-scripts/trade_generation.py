@@ -6,10 +6,11 @@ currencyArray = ['USD','EUR','JPY','GBP','AUD','CAD','CHF','CNY','SEK','MXN','NZ
 
 # Join trade with syntax: fromCurrency-toCurrency-Amount_of_fromCurrency-UNIX_TimeStamp
 def generateTrade():
+    currUnixStamp = time.time()
     currency1 = random.randint(0,24)
     currency2 = random.choice([i for i in range(0,24) if i not in [currency1]])
 
-    return "".join(
+    output = "".join(
 
         [
         currencyArray[currency1],
@@ -18,9 +19,11 @@ def generateTrade():
         '-',
         str(random.randint(1000,9999)),
         '-',
-        str(time.time())
+        str(currUnixStamp)
         ])
+    print("Sending packet: ", output)
+    return output
 
 while True:
-    send(IP(src="172.18.0.2", dst="172.18.0.1")/ICMP()/generateTrade())
+    send((IP(src="172.18.0.3", dst="172.18.0.2")/UDP(dport=5005)/generateTrade()),iface="eth0")
     time.sleep(2)
