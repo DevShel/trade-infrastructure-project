@@ -19,7 +19,7 @@ def setModeToRecording():
         collection.update_one({"status": "recording"}, { "$set": {"status": "normal"}});
     elif (currStatus == "normal"):
         collection.update_one({"status": "normal"}, { "$set": {"status": "recording"}});
-    wait(3)
+    time.sleep(2)
 
     
 
