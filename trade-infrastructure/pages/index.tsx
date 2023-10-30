@@ -181,7 +181,7 @@ export default function Home() {
             
             
             <div className="col-8 text-center">
-              This tool was created to track the network latency when sending trading information between two docker containers
+              This tool was created to track the network latency when sending trading information between two docker containers, with expansion to enable recording of trades on an AWS instance.
             </div>
             
             
