@@ -1,0 +1,11 @@
+[Unit]
+Description=Service for logging trades
+After=multi-user.target
+
+[Service]
+Type=simple
+Restart=no
+ExecStart=/usr/bin/python3 /ec2_server_packet_reading.py
+
+[Install]
+WantedBy=multi-user.target

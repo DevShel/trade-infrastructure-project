@@ -6,11 +6,11 @@ open("trade_log.txt", "w").close()
 def logPayload(x, received_time):
     if (x[Raw]):
         if (x[Raw].load):
-            print("Got a packet")
             logFile = open("trade_log.txt", "a")
             loadString = str(x[Raw].load)
             parsed_array = loadString[2:-2].split('-');
             listToStr = ' '.join([str(elem) for elem in parsed_array])
+            print("Got a packet", listToStr)
             listToStr += " | Received at: "
             listToStr += str(received_time)
             logFile.write(listToStr + '\n')
