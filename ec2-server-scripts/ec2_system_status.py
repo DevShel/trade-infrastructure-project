@@ -1,3 +1,10 @@
+''' 
+This is the background service that continuously runs on the ec2 server in the background.
+When this script detects that the flag has changed to recording, it uses the os module to run a systemd systemctl command
+which starts the trade logging script. When it detects that the flag has been set to normal mode, 
+it turns off the process.
+'''
+
 import time
 import pymongo
 from pymongo import MongoClient

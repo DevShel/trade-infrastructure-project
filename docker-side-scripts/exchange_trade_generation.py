@@ -5,6 +5,7 @@ from pymongo import MongoClient
 from pymongo import collection
 from bson import ObjectId
 
+# Connect to MongoDB
 cluster = MongoClient(
     'mongodb+srv://sheldon:vkc6eqg*CTN!pfa.eyp@trade-infrastructure-cl.xf3vgdx.mongodb.net/trades?retryWrites=true&w=majority')
 db = cluster["trades"]
@@ -36,11 +37,14 @@ def generateTrade():
     return output
 
 while True:
+    # Get status from MongoDB database
     currStatus = collection.find_one().get('status')
     print("Current system status: ", currStatus)
     if (currStatus == "recording"):
+        # Send data to AWS EC2 Instance
         send((IP(dst="18.118.122.109")/UDP(dport=RandShort())/generateTrade()))
     elif (currStatus == "normal"):
+        # Send data between docker images
         send((IP(src="172.18.0.3", dst="172.18.0.2")/UDP(dport=5005)/generateTrade()),iface="eth0")
 
     time.sleep(2)
