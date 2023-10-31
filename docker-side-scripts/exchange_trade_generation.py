@@ -1,3 +1,9 @@
+''' 
+Checks mode using MongoDB "status" flag
+Normal Mode: Sends randomly generated "trade information" UDP payloads (crafted with Scapy Python library) into local network.
+Recording Mode: Sends randomly generated "trade information" UDP payloads (crafted with Scapy Python library) to AWS EC2 Instance.
+'''
+
 from scapy.all import *
 import random, time
 import pymongo

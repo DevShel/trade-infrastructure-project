@@ -1,3 +1,8 @@
+'''
+When mode is set to recording, it reads packets from exchange_trade_generation.py
+and logs them into trade_log.txt. Monit monitors if this service is running based 
+on the scripts name. You can learn more about monit's configuration in the .monitrc file.
+'''
 from scapy.all import *
 
 # Clear contents of file in case trades already exist

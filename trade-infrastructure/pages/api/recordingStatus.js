@@ -1,3 +1,4 @@
+// NextJS api to get the current recording status in order to update the frontend
 import clientPromise from "../../lib/mongodb";
 
 export default async (req, res) => {

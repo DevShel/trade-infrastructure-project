@@ -16,28 +16,12 @@
 ##
 ## Start Monit in the background (run as a daemon):
 #
-set daemon  20             # check services at 20 seconds intervals
-#   with start delay 240    # optional: delay the first check by 4-minutes (by
-#                           # default Monit check immediately after Monit start)
-#
-#
-## Set syslog logging. If you want to log to a standalone log file instead,
-## specify the full path to the log file
-#
+set daemon  20            
+# check services at 20 seconds intervals
+
 set log /var/log/monit.log
 
-#
-#
-## Set the location of the Monit lock file which stores the process id of the
-## running Monit instance. By default this file is stored in $HOME/.monit.pid
-#
-# set pidfile /var/run/monit.pid
-#
-## Set the location of the Monit id file which stores the unique id for the
-## Monit instance. The id is generated and stored on first Monit start. By
-## default the file is placed in $HOME/.monit.id.
-#
-# set idfile /var/.monit.id
+
 set idfile /var/lib/monit/id
 #
 ## Set the location of the Monit state file which saves monitoring states
@@ -46,54 +30,23 @@ set idfile /var/lib/monit/id
 ## the monitoring state across reboots. If it is on temporary filesystem, the
 ## state will be lost on reboot which may be convenient in some situations.
 #
-# set statefile /var/.monit.state
+
 set statefile /var/lib/monit/state
 #
 #
 
 
-#
-## Set the list of mail servers for alert delivery. Multiple servers may be
-## specified using a comma separator. If the first mail server fails, Monit
-## will use the second mail server in the list and so on. By default Monit uses
-## port 25 - it is possible to override this with the PORT option.
-#
+# Began to set up mailserver:
+
  set mailserver smtp-relay.brevo.com port 587
  username "myapi" password "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"
     
-# primary mailserver
-#                backup.bar.baz port 10025,  # backup mailserver on port 10025
-#                localhost                   # fallback relay
-#
-#
-## By default Monit will drop alert events if no mail servers are available.
-## If you want to keep the alerts for later delivery retry, you can use the
-## EVENTQUEUE statement. The base directory where undelivered alerts will be
-## stored is specified by the BASEDIR option. You can limit the queue size
-## by using the SLOTS option (if omitted, the queue is limited by space
-## available in the back end filesystem).
-#
+
  set eventqueue
      basedir /var/lib/monit/events  # set the base directory where events will be stored
      slots 100                      # optionally limit the queue size
-#
-#
-## Send status and events to M/Monit (for more information about M/Monit
-## see https://mmonit.com/). By default Monit registers credentials with
-## M/Monit so M/Monit can smoothly communicate back to Monit and you don't
-## have to register Monit credentials manually in M/Monit. It is possible to
-## disable credential registration using the commented out option below.
-## Though, if safety is a concern we recommend instead using https when
-## communicating with M/Monit and send credentials encrypted. The password
-## should be URL encoded if it contains URL-significant characters like
-## ":", "?", "@". Default timeout is 5 seconds, you can customize it by
-## adding the timeout option.
-#
-# set mmonit http://monit:monit@192.168.1.10:8080/collector
-#     # with timeout 30 seconds              # Default timeout is 5 seconds
-#     # and register without credentials     # Don't register credentials
-#
-#
+
+
 ## Monit by default uses the following format for alerts if the mail-format
 ## statement is missing::
  set mail-format {

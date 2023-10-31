@@ -1,3 +1,7 @@
+'''
+Listens for random UDP payloads from exchange and logs them into MongoDB 
+"all-trades" collection
+'''
 from scapy.all import *
 import time
 import pymongo

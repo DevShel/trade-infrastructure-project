@@ -1,3 +1,5 @@
+// Primary frontend file for the trade infrastructure project
+
 import * as React from 'react'
 import Head from 'next/head'
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -91,6 +93,8 @@ const columns = [
 
 
 export default function Home() {
+
+  // Using react state to live update these variables
   const [recordingText, setRecordingText] = React.useState(() => "Loading")
   const [recordingStatus, setRecordingStatus] = React.useState(() => "Loading")
   const [data, setData] = React.useState(() => [...defaultTradeData])

@@ -1,3 +1,8 @@
+'''
+Listens for traffic from localhost:8080, and when received,
+it updates the system status in the MongoDB status collection
+'''
+
 from scapy.all import *
 import time
 import pymongo

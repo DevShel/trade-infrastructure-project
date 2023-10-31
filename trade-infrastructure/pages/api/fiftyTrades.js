@@ -1,3 +1,4 @@
+// Next JS api to pull the last 50 trades from mongodb
 import clientPromise from "../../lib/mongodb";
 
 export default async (req, res) => {

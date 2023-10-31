@@ -11,13 +11,13 @@ from pymongo import MongoClient
 from pymongo import collection
 import os
 
-
+# Connect to MongoDB
 cluster = MongoClient(
     'mongodb+srv://sheldon:vkc6eqg*CTN!pfa.eyp@trade-infrastructure-cl.xf3vgdx.mongodb.net/trades?retryWrites=true&w=majority')
 db = cluster["trades"]
 collection = db["status"]
 
-
+# Check the recording mode, with printouts for testing, that could be easily moved to simplify logic
 def getRecordingMode():
     currStatus = collection.find_one().get('status')
     if (currStatus == "recording"):
@@ -42,4 +42,5 @@ def getRecordingMode():
 
 while True:
     getRecordingMode()
+    # Get recording mode every 2 seconds
     time.sleep(2)
