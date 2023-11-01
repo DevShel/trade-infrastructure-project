@@ -9,3 +9,9 @@ The second part of the project revolves around its “recording” mode. If the 
 ## Architecture Diagram
 
 ![](https://github.com/DevShel/trade-infrastructure-project/blob/master/trade_monitor_diagram.png?raw=true)
+
+## Next Steps
+
+* Use Ansible for EC2 instance auto-deployment
+* Finish setting up SMTP mail server for Monit notifications from EC2 server
+* Set up EC2 monitoring dashboard using Prometheus Node Exporter and Grafana
