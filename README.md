@@ -15,5 +15,5 @@ The second part of the project revolves around its “recording” mode. If the 
 * Use Ansible for EC2 instance auto-deployment
 * Finish setting up SMTP mail server for Monit notifications from EC2 server
 * Set up EC2 monitoring dashboard using Prometheus Node Exporter and Grafana
-* Add a method to detect and fix dropped UDP packets
+* Create (or utilize an industry-standard) method to detect and resend dropped UDP packets
 * Add packet replay feature, enabling the sending of packets from the EC2 logfile at varying speeds
